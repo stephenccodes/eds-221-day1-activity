@@ -1,0 +1,76 @@
+---
+title: "stl_lead_inequity"
+author: "Stephen Carroll"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+library(janitor)
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+stl_blood_lead <- read.csv(here::here("data", "stl_blood_lead.csv" ))
+```
+
+```{r}
+skimr::skim(stl_blood_lead)
+```
+
+```{r}
+names(stl_blood_lead)
+dim(stl_blood_lead)
+```
+
+```{r}
+stl_lead_prop <- stl_blood_lead %>% 
+                 mutate(prop_white = white / totalPop * 100)
+```
+
+```{r}
+stl_lead_plot <- ggplot(data = stl_lead_prop, aes(
+  y = pctElevated,
+  x = prop_white))+
+  geom_point(size = 0.9, alpha = 10, aes(color = pctElevated),
+  show.legend = FALSE) +
+  scale_color_gradient(low = "blue", high = "red")+
+  theme_minimal()+
+  theme(
+  panel.background = element_rect(fill = "white"),
+  plot.background = element_rect(fill = "white")
+  )+
+  labs(title = "Percentage of Elevated Blood Lead levels in St. Louis",
+       x = "Percent Pop. Identyfying as White", 
+       y = " Percent Pop. with elevated laed levels")
+stl_lead_plot
+
+```
+
+```{r}
+ggsave(here::here("figs","stl_lead_plot.png"), 
+        height = 5, width = 5)
+```
+
+```{r}
+percent_elevated_plot <-ggplot(data = stl_blood_lead, aes(x = pctElevated))+
+  geom_histogram(color = "black", 
+                 fill = "blue", 
+                 binwidth = 1)+
+  theme_classic()+
+  labs(title = "Population with Elevated Blood Lead Levels", x = "Percent Elevated", y = "Count")
+percent_elevated_plot
+```
+```{r}
+ggsave(here::here("figs", "percent_elevated_plot.jpg"),
+       height = 5,
+       width = 5)
+```
+
+
+
+
